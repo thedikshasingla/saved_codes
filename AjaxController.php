@@ -16,6 +16,8 @@ class AjaxController extends Controller
         $chk_arry = $request->all_chks;
 
 
+        $response = array();
+
         /**
          * LOOP THROUGH ALL THE CHECKBOX VALUES
          */
@@ -33,20 +35,28 @@ class AjaxController extends Controller
             if ($has_chk <= 0) {
                 DB::table('capunits')->insert(
                     array(
-                        'chk_name'   =>   $chk_name,
-                        'value'   =>   $chk_val,
-                        'stats'   =>   $stats
+                        'chk_name'   =>   "{$chk_name}",
+                        'value'   =>   "{$chk_val}",
+                        'stats'   =>   "{$stats}"
                     )
+                );
+                $response[] = array(
+                    "status"    => "200",
+                    "message"   => "Inserted"
                 );
             } else { // IF DATABASE ALREADY HAS MATCHING CHECKBOX NAME
                 DB::table('capunits')
                     ->where('chk_name', $chk_name)
                     ->limit(2)
                     ->update(array('stats' => $stats));
+                
+                $response[] = array(
+                    "status"    => "200",
+                    "message"   => "Updated"
+                );
             }
 
             // ASSIGNING RESPONSE TO $response VARIABLE
-            $response = $tmp_nm;
         }
         // $response = array(
         //     'status' => 'success',
